@@ -761,6 +761,60 @@ class FIFOQueue(Queue):
         return e
 
 
+#en grafo
+class BestFirst(Queue):
+
+    def __init__(self):
+        self.A = []
+        self.start = 0
+
+    def append(self, item):
+        self.A.append(item)
+
+    def __len__(self):
+        return len(self.A) - self.start
+
+    def extend(self, items):
+        self.A.extend(items)
+        self.A.sort(key=lambda x: x.path_cost)
+
+    def pop(self):
+        e = self.A[self.start]
+        self.start += 1
+        if self.start > 5 and self.start > len(self.A) / 2:
+            self.A = self.A[self.start:]
+            self.start = 0
+        return e
+
+#en arbol
+class BestFirstSub(Queue):
+
+    def __init__(self):
+        self.A = []
+        self.start = 0
+
+    def append(self, item):
+        self.A.append(item)
+
+    def __len__(self):
+        return len(self.A) - self.start
+
+    def extend(self, items, problem):
+        self.A.extend(items)
+        #ordena en base a la heuristica + el coste de la ruta
+        self.A.sort(key=lambda x: (x.path_cost + problem.h(x)))
+        #problem.h(x) heuristica del nodo problem
+
+    def pop(self):
+        e = self.A[self.start]
+        self.start += 1
+        if self.start > 5 and self.start > len(self.A) / 2:
+            self.A = self.A[self.start:]
+            self.start = 0
+        return e
+
+
+
 class PriorityQueue(Queue):
     """A queue in which the minimum (or maximum) element (as determined by f and
     order) is returned first. If order is min, the item with minimum f(x) is

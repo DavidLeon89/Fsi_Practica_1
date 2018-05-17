@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 """Search (Chapters 3-4)
 
 The way to use this code is to subclass Problem to create a class of problems,
@@ -98,11 +100,14 @@ def tree_search(problem, fringe):
     The argument fringe should be an empty queue.
     Don't worry about repeFIFOQueueated paths to a state. [Fig. 3.8]"""
     fringe.append(Node(problem.initial))
+    cont = 0;
     while fringe:
         node = fringe.pop()
-        if problem.goal_test(node.state):
+        if problem.goal_test(node.state): #si encuentra el objetivo lo retorna
+            print("Nodos expandidos: ", cont)
             return node
-        fringe.extend(node.expand(problem))
+        fringe.extend(node.expand(problem), problem) #Path cos y la heuristica
+        cont += 1
     return None
 
 
@@ -120,21 +125,32 @@ def graph_search(problem, fringe):
     """Search through the successors of a problem to find a goal.
     The argument fringe should be an empty queue.
     If two paths reach a state, only use the best one. [Fig. 3.18]"""
-    closed = {}
+    closed = {} #lista cerrada
     fringe.append(Node(problem.initial))
+    cont = 0
     while fringe:
         node = fringe.pop()
         if problem.goal_test(node.state):
+            print("Nodos expandidos: ", cont)
             return node
         if node.state not in closed:
             closed[node.state] = True
             fringe.extend(node.expand(problem))
+            cont += 1
     return None
 
 
 def breadth_first_graph_search(problem):
     """Search the shallowest nodes in the search tree first. [p 74]"""
     return graph_search(problem, FIFOQueue())  # FIFOQueue -> fringe
+
+
+def ramificacion_acotacion(problem):
+    return graph_search(problem, BestFirst())
+
+def ramificacion_acotacion_subestimacion(problem):
+    return tree_search(problem, BestFirstSub())
+
 
 
 def depth_first_graph_search(problem):
